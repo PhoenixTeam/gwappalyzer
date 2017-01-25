@@ -1,11 +1,13 @@
 (function() {
 	var
 		url,
+		body,
 		originalUrl,
 		scriptDir,
 		scriptPath      = require('fs').absolute(require('system').args[0]),
 		resourceTimeout = 9000,
 		args            = [],
+		getHtml         = false;
 		debug           = false; // Output debug messages
 		quiet           = false; // Don't output errors
 
@@ -36,7 +38,9 @@
 					break;
 				case '--resource-timeout':
 					resourceTimeout = value;
-
+					break;
+				case '--html':
+					getHtml = true;
 					break;
 				default:
 					url = originalUrl = arg;
@@ -104,7 +108,13 @@
 				apps = apps || [];
 
 				if (apps.length > 0) {
-					require('system').stdout.write(JSON.stringify({ url: url, originalUrl: originalUrl, applications: apps }) + "\n");
+					var output = { url: url, originalUrl: originalUrl, applications: apps };
+
+					if (getHtml) {
+						output.html = body;
+					}
+
+					require('system').stdout.write(JSON.stringify(output) + "\n");
 				}
 			},
 
@@ -193,6 +203,8 @@
 						wappalyzer.log({ message: 'environmentVars: ' + environmentVars });
 
 						environmentVars = environmentVars.split(' ').slice(0, 500);
+
+						body = html;
 
 						wappalyzer.analyze(hostname, url, {
 							html:    html,
