@@ -9,14 +9,12 @@ exports.run = function(args, callback) {
 	args.unshift(path.join(__dirname, 'driver.js'));
 
 	var driver = spawn(phantomjs.path, args);
+	var result = '';
+	var error = null
 
-	driver.stdout.on('data', (data) => {
-		callback(`${data}`, null);
-	});
-
-	driver.stderr.on('data', (data) => {
-		callback(null, `${data}`);
-	});
+	driver.stdout.on('data', (data) => result += data);
+	driver.stderr.on('data', (data) => error += data);
+	driver.stdout.on('end', () => callback((result.length <= 0) ? null : result), error);
 }
 
 if ( !module.parent ) {
