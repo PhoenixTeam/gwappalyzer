@@ -107,15 +107,13 @@
 			sendResponse: function(apps) {
 				apps = apps || [];
 
-				if (apps.length > 0) {
-					var output = { url: url, originalUrl: originalUrl, applications: apps };
+				var output = { url: url, originalUrl: originalUrl, applications: apps };
 
-					if (getHtml) {
-						output.html = body;
-					}
-
-					require('system').stdout.write(JSON.stringify(output) + "\n");
+				if (getHtml) {
+					output.html = body;
 				}
+
+				require('system').stdout.write(JSON.stringify(output) + "\n");
 			},
 
 			/**
